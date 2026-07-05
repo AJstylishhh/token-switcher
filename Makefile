@@ -10,12 +10,6 @@ TOPDIR ?= $(CURDIR)
 include $(DEVKITPRO)/libnx/switch_rules
 
 #---------------------------------------------------------------------------------
-# TARGET is the name of the output
-# BUILD is the directory where object files & intermediate files will be placed
-# SOURCES is a list of directories containing source code
-# DATA is a list of directories containing data files
-# INCLUDES is a list of directories containing header files
-#---------------------------------------------------------------------------------
 TARGET		:=	token-switcher
 BUILD		:=	build
 SOURCES		:=	source
@@ -46,6 +40,9 @@ LIBDIRS	:= $(PORTLIBS) $(LIBNX)
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
 
+export TOPDIR
+export TARGET
+export OUTPUT	:=	$(CURDIR)/$(TARGET)
 export OUTDIR	:=	$(CURDIR)/$(BUILD)
 export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
 					$(foreach dir,$(DATA),$(CURDIR)/$(dir))
@@ -66,6 +63,10 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					-I$(CURDIR)/$(BUILD)
 
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+
+APP_TITLE := $(APP_TITLE)
+APP_AUTHOR := $(APP_AUTHOR)
+APP_VERSION := $(APP_VERSION)
 
 .PHONY: $(BUILD) clean all
 
