@@ -18,7 +18,8 @@ jobs:
         shell: bash
         run: |
           export DEVKITPRO=/opt/devkitpro
-          export PATH=$DEVKITPRO/devkitA64/bin:$DEVKITPRO/tools/bin:$PATH
+          export DEVKITA64=/opt/devkitpro/devkitA64
+          export PATH=$DEVKITA64/bin:$DEVKITPRO/tools/bin:$PATH
           make
 
       - name: Upload build artifact
