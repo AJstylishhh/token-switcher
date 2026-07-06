@@ -15,12 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build .nro
-        shell: bash
-        run: |
-          export DEVKITPRO=/opt/devkitpro
-          export DEVKITA64=/opt/devkitpro/devkitA64
-          export PATH=$DEVKITA64/bin:$DEVKITPRO/tools/bin:$PATH
-          make
+        run: make
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
