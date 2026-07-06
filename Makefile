@@ -20,7 +20,7 @@ APP_TITLE      := Account Switcher
 APP_AUTHOR     := AJ
 APP_VERSION    := 1.0.0
 
-ARCH	:=	-march=armv8-a -mtune=cortex-a57
+ARCH	:=	-march=armv8-a -mtune=cortex-a57 -fPIE
 
 CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
 			$(ARCH) $(DEFINES)
