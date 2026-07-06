@@ -3,12 +3,19 @@
 #---------------------------------------------------------------------------------
 
 ifeq ($(strip $(DEVKITPRO)),)
-$(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>/devkitpro")
+$(error "Please set DEVKITPRO in your environment. export DEVKITPRO=<path to>devkitPRO")
 endif
 
 TOPDIR ?= $(CURDIR)
+
 include $(DEVKITPRO)/libnx/switch_rules
 
+#---------------------------------------------------------------------------------
+# TARGET is the name of the output
+# BUILD is the directory where object files & intermediate files will be placed
+# SOURCES is a list of directories containing source code
+# DATA is a list of directories containing data files
+# INCLUDES is a list of directories containing header files
 #---------------------------------------------------------------------------------
 TARGET		:=	token-switcher
 BUILD		:=	build
@@ -16,25 +23,32 @@ SOURCES		:=	source
 DATA		:=	data
 INCLUDES	:=
 
-APP_TITLE      := Account Switcher
-APP_AUTHOR     := AJ
-APP_VERSION    := 1.0.0
-
-ARCH	:=	-march=armv8-a -mtune=cortex-a57 -fPIE
+#---------------------------------------------------------------------------------
+# options for code generation
+#---------------------------------------------------------------------------------
+ARCH	:=	-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE
 
 CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
 			$(ARCH) $(DEFINES)
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
+CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++20
 
 ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g -Wl,-Map,$(notdir $*.map)
+LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
+
 LIBS	:= -lnx
 
+#---------------------------------------------------------------------------------
+# list of directories containing libraries, this must be the top level containing
+# include and lib
+#---------------------------------------------------------------------------------
 LIBDIRS	:= $(PORTLIBS) $(LIBNX)
 
+#---------------------------------------------------------------------------------
+# no real need to edit anything past this point unless you need to add additional
+# rules for different file extensions
 #---------------------------------------------------------------------------------
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 #---------------------------------------------------------------------------------
@@ -63,10 +77,6 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
-APP_TITLE := $(APP_TITLE)
-APP_AUTHOR := $(APP_AUTHOR)
-APP_VERSION := $(APP_VERSION)
-
 .PHONY: $(BUILD) clean all
 
 #---------------------------------------------------------------------------------
@@ -89,6 +99,7 @@ DEPENDS	:=	$(OFILES:.o=.d)
 all	:	$(OUTPUT).nro
 
 $(OUTPUT).nro	:	$(OUTPUT).elf $(OUTPUT).nacp
+
 $(OUTPUT).elf	:	$(OFILES)
 
 -include $(DEPENDS)
